@@ -1,23 +1,46 @@
 #include <Arduino.h>
 
-#define buzzer 6 // buzzer is connected to D6
+// initalise the frequency of the notes
+#define NOTE_A4  440
+#define NOTE_AS4 466
+#define NOTE_C4  262
+#define NOTE_D4  294
+#define NOTE_E4  330
+#define NOTE_F4  349
+#define NOTE_G4  392
+#define NOTE_C5  523
+
+//assign buzzer as pin 6
+#define buzzer 6
+
+// notes in the melody: Happy Birthday song
+int melody[] = {
+  NOTE_C4, NOTE_C4, NOTE_D4, NOTE_C4, NOTE_F4, NOTE_E4,
+  NOTE_C4, NOTE_C4, NOTE_D4, NOTE_C4, NOTE_G4, NOTE_F4,
+  NOTE_C4, NOTE_C4, NOTE_C5, NOTE_A4, NOTE_F4, NOTE_E4, NOTE_D4,
+  NOTE_AS4, NOTE_AS4, NOTE_A4, NOTE_F4, NOTE_G4, NOTE_F4
+};
+
+// note durations: 4 = quarter note, 8 = eighth note, etc.:
+int noteDurations[] = {
+  8, 8, 4, 4, 4, 2,
+  8, 8, 4, 4, 4, 2,
+  8, 8, 4, 4, 4, 4, 4,
+  8, 8, 4, 4, 4, 2,
+};
 
 void setup() {
-  /* tone(pin, frequency, duration) */
-  //set buzzer pin to play 264Hz for 300ms = Do
-  tone(buzzer, 262, 300);
-  //wait 1s
-  delay(1000);
-
-  //set buzzer pin to play 297Hz for 300ms = Re
-  tone(buzzer, 297, 300);
-  //wait 1s
-  delay(1000);
-
-  //set buzzer pin to play 330Hz for 300ms = Mi
-  tone(buzzer, 330, 300);
-  //wait 1s
-  delay(1000);
+  // iterate over the notes of the melody:
+  for (int thisNote = 0 ; thisNote < 25 ; thisNote++) {
+    // to calculate the note duration, take one second divided by the note type.
+    //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
+    int noteDuration = 1000 / noteDurations[thisNote];
+    tone(buzzer, melody[thisNote], noteDuration);
+    // to distinguish the notes, set a minimum time between them.
+    int pauseBetweenNotes = noteDuration * 1.50;
+    delay(pauseBetweenNotes);
+    noTone(buzzer);
+  }
 }
 
 void loop() {
